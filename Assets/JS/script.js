@@ -1,7 +1,13 @@
 //get today's date and display it
 var today = moment().format('dddd MMMM Do YYYY');
+var hourNow = moment().format('h'); //to print current time on page
+var hourNowH = moment().format('H');
+var minuteNow = moment().format('ma');
+var timeNow = hourNow + ':' + minuteNow;
 var dateDisplay = document.getElementById("dateText");
 dateDisplay.textContent = today;
+var now = document.getElementById("timeNow");
+now.textContent = timeNow;
 
 //populate the "table" of time/desc/save for each hour in the work day
 var hourContainer = document.getElementById("container");
@@ -34,27 +40,64 @@ for (var i = 1; i < 10; i++) {
     // console.log(tm);
 }
 
+// Time in Past? Set class Past
+
+// Time in Current Hour? Set class Present
+
+// Time in Future? Do Nothing
+
+var PPF = '';
+var rowH = '';
+for(i = 1 ; i < 10 ;i++) {
+    var rowTime = document.getElementById("h"+i+"tm").textContent;
+    if (moment(rowTime,"ha").format("H")*1 < hourNowH*1) {
+        PPF = "past";
+        $( "#h"+i+"desc" ).removeClass( "future" ).addClass( "past" );
+    } else if (moment(rowTime,"ha").format("H")*1 === hourNowH*1) {
+        PPF = "present"
+        $( "#h"+i+"desc" ).removeClass( "future" ).addClass( "present" );
+    } else {
+        PPF = "future"
+    }
+    rowH = moment(rowTime,"ha").format("H");
+    console.log(rowTime + " " + PPF + "H: " + hourNowH + "rowH: " + rowH);
+}
+
+
+switch (PPF) {
+  case 'past':
+    console.log('past');
+    break;
+  case 'present':
+    console.log('present');
+    break;
+  default:
+    console.log(`future`);
+}
+
+
 $(document).ready(function () {
     $(".saveBtn").click(function (e) {
         e.preventDefault();
+        // console.log(e);
         //set variable to store for time and event description
         var btnClicked = e.target.dataset.hour;
         var descID = btnClicked + "desc";
         var timeID = btnClicked + "tm";
         var dayID = moment().format('MMDDYY');
-        console.log("dayID: " + dayID);
-        console.log(timeID);
+        // console.log("dayID: " + dayID);
+        // console.log(timeID);
         var descToSave = document.getElementById(descID).value;
         console.log(descToSave);
         var timeToSave = document.getElementById(timeID).textContent;
-        console.log(timeToSave);
+        // console.log(timeToSave);
         //local storage stuff
         var currentEventsRaw = localStorage.getItem("events");
         var currentEvents = [];
         if (!!currentEventsRaw) {
             currentEvents = JSON.parse(currentEventsRaw);
         }
-        currentEvents.push({ day: dayID, time: timeToSave, event: descToSave });
+        currentEvents.push({ day: dayID, descID: descID, event: descToSave });
         localStorage.setItem("events", JSON.stringify(currentEvents));
     });
 });
@@ -64,28 +107,21 @@ var btnClearScores = document.getElementById("btnClear");
 
 function showEvents() {
     var i = -1;
-    var allEventsRaw = localStorage.getItem("events"); // I think I am a string
+    var j = -1;
+    var allEventsRaw = localStorage.getItem("events"); // I am a string
     console.log("allEventsRaw: " + allEventsRaw);
-    var currentEvents = []; // I aman empty array
+    var currentEvents = []; // I am an empty array
     if (!!allEventsRaw) {
         currentEvents = JSON.parse(allEventsRaw);
         console.log("currentEvents all: " + currentEvents); // I should be an array of events
         currentEvents.forEach(function(item){
             currentEvents.push(item);
             i++;
-            console.log("currectEvents["+i+"]: " + currentEvents[i]); 
-            var eventDisplay = document.getElementById(currentEvents.time);
+            console.log("currentEvents["+i+"]: " , currentEvents[i]); 
+            // var eventDisplay = document.getElementById(currentEvents[i].descID);
+            // eventDisplay.textContent = currentEvents[i].event;
+            document.getElementById(currentEvents[i].descID).value = currentEvents[i].event;
             });
-        currentEvents.forEach(element => {
-            console.log(currentEvents[i].time)
-            // eventDisplay.textContent = currentEvents.event;
-        });
-        
-        // for (let k = 0; k < currentEvents.length; k++) {
-        //     var eventDisplay = document.getElementById("h" + k + "desc");
-        //     //   let newListItem = document.createElement("li");
-        //     eventDisplay.textContent = currentEvents[k].event;
-        //     //   scoreDisplay.appendChild(newListItem);
         };
     }
 
