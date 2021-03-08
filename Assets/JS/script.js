@@ -2,7 +2,7 @@
 var today = moment().format('dddd MMMM Do YYYY');
 var hourNow = moment().format('h'); //to print current time on page
 var hourNowH = moment().format('H');
-var minuteNow = moment().format('ma');
+var minuteNow = moment().format('mma');
 var timeNow = hourNow + ':' + minuteNow;
 var dateDisplay = document.getElementById("dateText");
 dateDisplay.textContent = today;
@@ -37,14 +37,7 @@ for (var i = 1; i < 10; i++) {
     hourContainer.appendChild(tm);
     hourContainer.appendChild(desc);
     hourContainer.appendChild(btn);
-    // console.log(tm);
 }
-
-// Time in Past? Set class Past
-
-// Time in Current Hour? Set class Present
-
-// Time in Future? Do Nothing
 
 var PPF = '';
 var rowH = '';
